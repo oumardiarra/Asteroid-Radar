@@ -10,6 +10,8 @@ data class NetworkAsteroid(val id: Long, val codename: String, val closeApproach
                            val isPotentiallyHazardous: Boolean)
 
 
+
+
 fun List<NetworkAsteroid>.asDatabaseModel(): Array<DatabaseAsteroid> {
     return map {
         DatabaseAsteroid(

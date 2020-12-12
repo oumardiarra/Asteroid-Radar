@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import com.udacity.asteroidradar.api.getFormattedDate
@@ -16,7 +17,10 @@ import java.lang.Exception
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.database.asDomainModel
 
+
+
 class AsteroidRepository(private val database: AsteroidDatabase) {
+
     val asteroids: LiveData<List<Asteroid>> =
         Transformations.map(database.asteroidDao.getAsteroids()) {
             it.asDomainModel()
@@ -26,6 +30,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 val formattedDateList = getFormattedDate()
+
                 Timber.i("Start getting Json from the Service: ")
                 val jsonAsteroid = Network.retrofitService.getAsteroidList(
                     formattedDateList.get(0), formattedDateList.get(1),
@@ -39,8 +44,10 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 val listNetworkAsteroid = parseAsteroidsJsonResult(jsonObject)
                 Timber.i("End parseAsteroidsJsonResult ")
                 database.asteroidDao.insertAll(*listNetworkAsteroid.asDatabaseModel())
+
             } catch (e: Exception) {
                 Timber.e("Unable to RefreshAsteroide: " + e.message)
+
             }
 
         }
