@@ -29,7 +29,7 @@ interface AsteroidImageOfDayService {
 object Network {
     private val retrofit = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL)
-        .addConverterFactory(ScalarsConverterFactory.create())
+        .addConverterFactory(StringOrJsonConverterFactory.create())
         .build()
 
     val retrofitService = retrofit.create(AsteroidService::class.java)
