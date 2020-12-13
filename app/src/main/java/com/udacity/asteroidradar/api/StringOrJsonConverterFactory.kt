@@ -24,11 +24,11 @@ class StringOrJsonConverterFactory : Converter.Factory() {
     ): Converter<ResponseBody, *>? {
         annotations?.forEach { annotation ->
             Timber.i(" StringAno::class.java ${annotation.annotationClass}")
-            when (annotation.annotationClass) {
+            when (annotation) {
 
-                StringAno::class.java -> return ScalarsConverterFactory.create()
-                    .responseBodyConverter(type, annotations, retrofit)
-                JsonAno::class.java -> return MoshiConverterFactory.create(moshi)
+                is StringAno -> return ScalarsConverterFactory.create()
+                        .responseBodyConverter(type, annotations, retrofit)
+                is JsonAno -> return MoshiConverterFactory.create(moshi)
                     .responseBodyConverter(type, annotations, retrofit)
 
             }
@@ -43,4 +43,6 @@ class StringOrJsonConverterFactory : Converter.Factory() {
         fun create() = StringOrJsonConverterFactory()
     }
 }
+
+
 

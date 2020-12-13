@@ -15,8 +15,8 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.Exception
 import androidx.lifecycle.Transformations
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.asDomainModel
-
 
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
@@ -25,6 +25,9 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         Transformations.map(database.asteroidDao.getAsteroids()) {
             it.asDomainModel()
         }
+    private var _picOfDay = MutableLiveData<PictureOfDay>()
+    val picOfDay: LiveData<PictureOfDay>
+        get() = _picOfDay
 
     suspend fun refreshAsteroid() {
         withContext(Dispatchers.IO) {
@@ -50,6 +53,18 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
 
             }
 
+        }
+    }
+
+    suspend fun getPictureOfDay() {
+        withContext(Dispatchers.IO) {
+            try {
+                Timber.i("Getting Picture of day")
+                val pictureOfDay = Network.imageOfDayService.getAsteroidOfDay(Constants.API_KEY)
+                _picOfDay.postValue(pictureOfDay)
+            } catch (exc: Exception) {
+                Timber.e("Exception gettion Picture Of Day :" + exc.message)
+            }
         }
     }
 }
