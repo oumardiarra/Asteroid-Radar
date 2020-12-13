@@ -11,6 +11,15 @@ interface AsteroidDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vararg asteroids: DatabaseAsteroid)
+
+    @Query("select * from databaseasteroid order by date(closeApproachDate) desc")
+    fun getSavedAsteroid(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("select * from databaseasteroid  where date(closeApproachDate)=date('now')")
+    fun getTodayAsteroid(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("select * from databaseasteroid  where date(closeApproachDate) between date('now') and date('now','+7 days') order by date(closeApproachDate) desc")
+    fun getWeekAsteroid(): LiveData<List<DatabaseAsteroid>>
 }
 
 
@@ -24,9 +33,11 @@ private lateinit var INSTANCE: AsteroidDatabase
 fun getDatabase(context: Context): AsteroidDatabase {
     synchronized(AsteroidDatabase::class.java) {
         if (!::INSTANCE.isInitialized) {
-            INSTANCE = Room.databaseBuilder(context.applicationContext,
-                    AsteroidDatabase::class.java,
-                    "Asteroids").build()
+            INSTANCE = Room.databaseBuilder(
+                context.applicationContext,
+                AsteroidDatabase::class.java,
+                "Asteroids"
+            ).build()
         }
     }
     return INSTANCE

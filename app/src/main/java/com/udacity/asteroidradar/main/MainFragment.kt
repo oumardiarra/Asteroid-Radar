@@ -30,13 +30,19 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
-        binding.asteroidRecycler.adapter = AsteroidListAdapter(AsteroidListAdapter.OnclickListener {
+        val adapter = AsteroidListAdapter(AsteroidListAdapter.OnclickListener {
             viewModel.displayAsteroidDetails(it)
         })
+        binding.asteroidRecycler.adapter = adapter
         viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
                 viewModel.displayAsteroidDetailsComplete()
+            }
+        })
+        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                adapter.submitList(it)
             }
         })
         setHasOptionsMenu(true)
@@ -50,6 +56,11 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.show_buy_menu -> viewModel.updateListAsteroid(AsteroidFilters.ALL)
+            R.id.show_all_menu -> viewModel.updateListAsteroid(AsteroidFilters.WEEK)
+            R.id.show_rent_menu -> viewModel.updateListAsteroid(AsteroidFilters.TODAY)
+        }
         return true
     }
 }

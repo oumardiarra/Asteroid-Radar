@@ -17,14 +17,34 @@ import java.lang.Exception
 import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.asDomainModel
+import com.udacity.asteroidradar.main.AsteroidFilters
 
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
 
-    val asteroids: LiveData<List<Asteroid>> =
-        Transformations.map(database.asteroidDao.getAsteroids()) {
-            it.asDomainModel()
+    fun getAsteroid(asteroidFilters: AsteroidFilters): LiveData<List<Asteroid>> {
+        Timber.i("asteroidFilters ${asteroidFilters}")
+        return when (asteroidFilters) {
+            AsteroidFilters.WEEK -> Transformations.map(database.asteroidDao.getWeekAsteroid()) {
+                it.asDomainModel()
+
+            }
+            AsteroidFilters.ALL -> Transformations.map(database.asteroidDao.getSavedAsteroid()) {
+                it.asDomainModel()
+
+            }
+            AsteroidFilters.TODAY -> Transformations.map(database.asteroidDao.getTodayAsteroid()) {
+                it.asDomainModel()
+
+            }
+            else -> Transformations.map(database.asteroidDao.getAsteroids()) {
+                it.asDomainModel()
+
+            }
         }
+
+    }
+
     private var _picOfDay = MutableLiveData<PictureOfDay>()
     val picOfDay: LiveData<PictureOfDay>
         get() = _picOfDay
