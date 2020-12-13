@@ -1,9 +1,9 @@
-# Purpose of this Folder
+# Project
 
-This folder should contain the scaffolded project files to get a student started on their project. This repo will be added to the Classroom for students to use, so please do not have any solutions in this folder.
+This project called Asteroid Rader is one of the project included in Android Kotlin Developer Nanodegree program at Udacity.
 
 ## Note: Android Kotlin Gradle Update
-Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.properties` file:
+Put your Api Key in the file Constants.kt
 ```
-distributionUrl = https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
+const val API_KEY="<Your API KEY HERE>"
 ```
