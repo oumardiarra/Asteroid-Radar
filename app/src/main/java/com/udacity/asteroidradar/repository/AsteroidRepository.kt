@@ -82,7 +82,8 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         withContext(Dispatchers.IO) {
             try {
                 Timber.i("Getting Picture of day")
-                val pictureOfDay = Network.imageOfDayService.getAsteroidOfDay(BuildConfig.NASA_API_KEY)
+                val pictureOfDay =
+                    Network.imageOfDayService.getAsteroidOfDay(BuildConfig.NASA_API_KEY)
                 Timber.i("Picture of day is ${pictureOfDay}")
                 database.asteroidDao.insertPictureOfDay(pictureOfDay.asDatabasModel())
                 Timber.i("End Getting Picture of day")
