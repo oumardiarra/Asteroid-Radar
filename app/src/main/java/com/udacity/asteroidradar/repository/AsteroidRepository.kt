@@ -48,7 +48,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
     }
 
     val pictureOfDay = Transformations.map(database.asteroidDao.getPictureOfDAy()) {
-        it.asDomainModel()
+        it?.asDomainModel()
     }
 
     suspend fun refreshAsteroid() {

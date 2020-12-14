@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         buildTypes.each {
-            it.buildConfigField 'String', 'NASA_API_KEY',"\"Your NASA API KEY HERE\""
+            it.buildConfigField 'String', 'NASA_API_KEY',"\"Your API KEY Here\""
         }
         release {
             minifyEnabled false
