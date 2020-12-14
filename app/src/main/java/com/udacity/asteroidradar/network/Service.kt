@@ -20,7 +20,7 @@ interface AsteroidService {
 interface AsteroidImageOfDayService {
     @JsonAno
     @GET("planetary/apod")
-    suspend fun getAsteroidOfDay(@Query("api_key") apiKey: String): PictureOfDay
+    suspend fun getAsteroidOfDay(@Query("api_key") apiKey: String): NetworkPictureOfDay
 }
 
 

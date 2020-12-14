@@ -27,7 +27,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // val asteroids = repository.getAsteroid(AsteroidFilters.DEFAULT)
 
     //  val asteroids = repository.asteroids
-    val picOfDay = repository.picOfDay
+    val picOfDay = repository.pictureOfDay
     private var _navigateToSelectedAsteroid = MutableLiveData<Asteroid>()
     val navigateToSelectedAsteroid: LiveData<Asteroid>
         get() = _navigateToSelectedAsteroid
@@ -47,7 +47,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getPicOfDay() {
         viewModelScope.launch {
-            repository.getPictureOfDay()
+            repository.refreshPictureOfDay()
         }
     }
 

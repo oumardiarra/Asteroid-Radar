@@ -15,9 +15,11 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.lang.Exception
 import androidx.lifecycle.Transformations
+import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.asDomainModel
 import com.udacity.asteroidradar.main.AsteroidFilters
+import com.udacity.asteroidradar.network.asDatabasModel
 
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
@@ -45,9 +47,9 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
 
     }
 
-    private var _picOfDay = MutableLiveData<PictureOfDay>()
-    val picOfDay: LiveData<PictureOfDay>
-        get() = _picOfDay
+    val pictureOfDay = Transformations.map(database.asteroidDao.getPictureOfDAy()) {
+        it.asDomainModel()
+    }
 
     suspend fun refreshAsteroid() {
         withContext(Dispatchers.IO) {
@@ -57,7 +59,7 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
                 Timber.i("Start getting Json from the Service: ")
                 val jsonAsteroid = Network.retrofitService.getAsteroidList(
                     formattedDateList.get(0), formattedDateList.get(1),
-                    Constants.API_KEY
+                    BuildConfig.NASA_API_KEY
                 )
                 Timber.i("End getting Json from the Service: ")
                 Timber.i("Formating string result to Json: ")
@@ -76,15 +78,19 @@ class AsteroidRepository(private val database: AsteroidDatabase) {
         }
     }
 
-    suspend fun getPictureOfDay() {
+    suspend fun refreshPictureOfDay() {
         withContext(Dispatchers.IO) {
             try {
                 Timber.i("Getting Picture of day")
-                val pictureOfDay = Network.imageOfDayService.getAsteroidOfDay(Constants.API_KEY)
-                _picOfDay.postValue(pictureOfDay)
+                val pictureOfDay = Network.imageOfDayService.getAsteroidOfDay(BuildConfig.NASA_API_KEY)
+                Timber.i("Picture of day is ${pictureOfDay}")
+                database.asteroidDao.insertPictureOfDay(pictureOfDay.asDatabasModel())
+                Timber.i("End Getting Picture of day")
             } catch (exc: Exception) {
-                Timber.e("Exception gettion Picture Of Day :" + exc.message)
+                Timber.e("Unable to refreshPictureOfDay: " + exc.message)
             }
         }
     }
+
+
 }

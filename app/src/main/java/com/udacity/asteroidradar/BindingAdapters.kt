@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Callback
@@ -82,9 +83,8 @@ fun bindTextViewToDisplayVelocity(textView: TextView, number: Double) {
 
 fun bindImageViewPicOfDay(imageView: ImageView, pictureOfDay: PictureOfDay?) {
     val context = imageView.context
-   // val isConnected = chekNetworkConnectivity(context)
-
-    Picasso.with(context).load(pictureOfDay?.url).placeholder(R.drawable.ic_baseline_sync_problem).into(imageView)
+    val imgUri = pictureOfDay?.url?.toUri()?.buildUpon()?.scheme("https")?.build()
+    Picasso.with(context).load(imgUri).into(imageView)
     imageView.contentDescription =
         "${context.getString(R.string.image_of_the_day)} ${pictureOfDay?.title}"
 
@@ -92,29 +92,4 @@ fun bindImageViewPicOfDay(imageView: ImageView, pictureOfDay: PictureOfDay?) {
 }
 
 
-private fun chekNetworkConnectivity(context: Context): Boolean {
-    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-    val builder: NetworkRequest.Builder = NetworkRequest.Builder()
-    var isConnected: Boolean = false
 
-    cm.registerNetworkCallback(builder.build(),
-        object : ConnectivityManager.NetworkCallback() {
-            override fun onLost(network: Network) {
-                super.onLost(network)
-                Timber.e("Network Unavailable")
-            }
-
-            override fun onUnavailable() {
-                super.onUnavailable()
-                Timber.e("Network Unavailable")
-            }
-
-            override fun onAvailable(network: Network) {
-                super.onAvailable(network)
-                Timber.i("Network available")
-                isConnected = true
-            }
-        })
-    return isConnected
-
-}
