@@ -9,6 +9,14 @@ it.buildConfigField 'String', 'NASA_API_KEY',"\"Your NASA API KEY HERE\""
 ```
 
 ### Screenshots
-![](screenshots/screen_1.png)
+
+<p float="left">
+  <img src="screenshots/screen_1.png" width="300" />
+  <img src="screenshots/screen_2.png" width="300" /> 
+  <img src="screenshots/screen_3.png" width="300" />
+  <img src="screenshots/screen_4.png" width="300" />
+</p>
+
+
 
 
